@@ -14,11 +14,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -119,48 +119,89 @@ public class MainActivity3 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                WallpaperManager myWallpaperManager
-                        = WallpaperManager.getInstance(getApplicationContext());
-                Toast.makeText(MainActivity3.this, "LockScreen Wallpaper Sat", Toast.LENGTH_SHORT).show();
-                try {
-                    myWallpaperManager.setResource(image[viewpager.getCurrentItem()], WallpaperManager.FLAG_LOCK);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
+                PopupMenu popmenu = new PopupMenu(MainActivity3.this, view);
+                popmenu.getMenu().add(Menu.NONE, 0, 0, "Lock Screen");
+                popmenu.getMenu().add(Menu.NONE, 1, 1, "Home Screen");
+                popmenu.getMenu().add(Menu.NONE, 2, 2, "Both");
+                popmenu.show();
 
-        left.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                popmenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
 
-                if (poss > 0) {
-                    poss--;
-                    viewpager.setCurrentItem(poss);
-                }
-                if (poss == 0) {
-                    Toast.makeText(MainActivity3.this, "This is First", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                        int i = menuItem.getItemId();
+                        if (i == 0) {
+                            WallpaperManager myWallpaperManager
+                                    = WallpaperManager.getInstance(getApplicationContext());
+                            Toast.makeText(MainActivity3.this, "LockScreen Wallpaper Sat", Toast.LENGTH_SHORT).show();
+                            try {
+                                myWallpaperManager.setResource(image[viewpager.getCurrentItem()], WallpaperManager.FLAG_LOCK);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            return true;
+                        }
+                        if (i == 1) {
 
-        right.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                try {
-                    if (poss < image.length) {
-                        poss++;
-                        viewpager.setCurrentItem(poss);
+                            WallpaperManager myWallpaperManager
+                                    = WallpaperManager.getInstance(getApplicationContext());
+                            Toast.makeText(MainActivity3.this, "HomeScreen Wallpaper Sat", Toast.LENGTH_SHORT).show();
+                            try {
+                                myWallpaperManager.setResource(image[viewpager.getCurrentItem()], WallpaperManager.FLAG_SYSTEM);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            return true;
+                        }
+                        if (i == 2) {
+                            WallpaperManager myWallpaperManager
+                                    = WallpaperManager.getInstance(getApplicationContext());
+                            Toast.makeText(MainActivity3.this, " Wallpaper Sat", Toast.LENGTH_SHORT).show();
+                            try {
+                                myWallpaperManager.setResource(image[viewpager.getCurrentItem()]);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
-                } catch (Exception e) {
-                    Toast.makeText(MainActivity3.this, "No More Available", Toast.LENGTH_SHORT).show();
-                }
+                });
 
+                left.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if (poss > 0) {
+                            poss--;
+                            viewpager.setCurrentItem(poss);
+                        }
+                        if (poss == 0) {
+                            Toast.makeText(MainActivity3.this, "This is First", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                right.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        try {
+                            if (poss < image.length) {
+                                poss++;
+                                viewpager.setCurrentItem(poss);
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(MainActivity3.this, "No More Available", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
-
     }
 
     @Override
@@ -171,6 +212,7 @@ public class MainActivity3 extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -178,10 +220,10 @@ public class MainActivity3 extends AppCompatActivity {
             WallpaperManager myWallpaperManager
                     = WallpaperManager.getInstance(getApplicationContext());
             Toast.makeText(MainActivity3.this, "LockScreen Wallpaper Sat", Toast.LENGTH_SHORT).show();
+
             try {
                 myWallpaperManager.setResource(image[viewpager.getCurrentItem()], WallpaperManager.FLAG_LOCK);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -222,6 +264,7 @@ public class MainActivity3 extends AppCompatActivity {
         }
 
         if (item.getItemId() == R.id.sher) {
+
             int cnt = new Random().nextInt(10000);
 
             Bitmap b = BitmapFactory.decodeResource(getResources(), image[viewpager.getCurrentItem()]);
@@ -237,4 +280,5 @@ public class MainActivity3 extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
